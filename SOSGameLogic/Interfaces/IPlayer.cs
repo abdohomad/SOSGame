@@ -6,6 +6,6 @@ namespace SOSGameLogic.Interfaces
         char GetPlayerSymbol();
         void IncreaseScore(int points);
         int GetScore();
-        void SetPlayerSymbol(char symble);
+        void SetPlayerSymbol(char symbol);
     }
 }

@@ -4,7 +4,7 @@ namespace SOSGameLogic.Implementation
 {
     public class Board : IBoard
     {
-        private readonly char[,] board; // Represents the game board as a 2D character array
+        public char[,] board; // Represents the game board as a 2D character array
 
         public Board(int size)
         {

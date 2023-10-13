@@ -42,13 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implementation\Board.cs" />
-    <Compile Include="Implementation\Engine.cs" />
     <Compile Include="Implementation\Game.cs" />
     <Compile Include="Implementation\GeneralGameMode.cs" />
     <Compile Include="Implementation\Player.cs" />
     <Compile Include="Implementation\SimpleGameMode.cs" />
     <Compile Include="Interfaces\IBoard.cs" />
-    <Compile Include="Interfaces\IEngine.cs" />
     <Compile Include="Interfaces\IGame.cs" />
     <Compile Include="Interfaces\IGenericGameModeLogic.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />

@@ -17,14 +17,9 @@ namespace SOSGameGU
         public int boardSize;
         public bool player1SymbolSelected = false;
         public bool player2SymbolSelected = false;
-        // Size of the game board (rows/columns)
-        public enum GameMode
-        {
-            Simple,
-            General
-        }
-        public GameMode selectedGameMode = GameMode.Simple; // Selected game mode (Simple/General)
+        public IGenericGameModeLogic _modeLogic;
         public char playerSymbol = ' '; // Player symbol (S or O)
+        public readonly IPlayer currentPlayer;
 
         public MainWindow()
         {
@@ -33,7 +28,9 @@ namespace SOSGameGU
             boardSize = 0;
             player1 = new Player(playerSymbol); // Initialize Player 1
             player2 = new Player(playerSymbol); // Initialize Player 2
-            game = new Game(boardSize, player1, player1); // Initialize the game
+
+            _modeLogic = new SimpleGameMode(boardSize);
+            game = new Game(boardSize, player1, player1, _modeLogic); // Initialize the game
         }
 
         // Event handler for when a radio button for game mode is checked
@@ -44,12 +41,14 @@ namespace SOSGameGU
                 // Check which radio button was checked and update the selected game mode
                 if (radioButton.Name == "rbSimpleMode")
                 {
-                    selectedGameMode = GameMode.Simple;
+                    _modeLogic = new SimpleGameMode(boardSize);
+                  
                 }
                 else if (radioButton.Name == "rbGeneralMode")
                 {
-                    selectedGameMode = GameMode.General;
+                    _modeLogic = new GeneralGameMode();
                 }
+               
             }
         }
 
@@ -89,17 +88,8 @@ namespace SOSGameGU
                     GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 }
 
-                switch (selectedGameMode)
-                {
-                    case GameMode.Simple:
                         StartGame(rows);
-                        break;
-                    case GameMode.General:
-                        StartGame(rows);
-                        break;
-                    default:
-                        break;
-                }
+
             }
             else
             {
@@ -194,8 +184,10 @@ namespace SOSGameGU
                 }
             }
 
-            IPlayer currentPlayer = selectedGameMode == GameMode.Simple ? player1 : player2;
-            game = new Game(boardSize, player1, player2);
+            //IPlayer currentPlayer = (_modeLogic is SimpleGameMode) ? player1 : player2;
+            game = new Game(boardSize, player1, player2, _modeLogic);
+
+            Console.WriteLine(game.ToString());
         }
 
         // Event handler for cell button clicks
@@ -204,37 +196,54 @@ namespace SOSGameGU
             if (!player1SymbolSelected || !player2SymbolSelected)
             {
                 MessageBox.Show("Both players must choose valid player symbols ('S' or 'O') before making a move.");
+                //Console.WriteLine();
                 return;
             }
-            if (game.IsGameOver())
+            else if (game.IsGameOver())
             {
-                MessageBox.Show("The game is already over. Please start a new game.");
+                //MessageBox.Show("The game is already over. Please start a new game.");
+                if (player1.GetScore() >= 3)
+                {
+                    lblWinner.Content = "Player 1 (S) Wins!";
+                }
+                else if (player2.GetScore() >= 3)
+                {
+                    lblWinner.Content = "Player 2 (O) Wins!";
+                }
+                else
+                {
+                    lblWinner.Content = "It's a draw!";
+                }
                 return;
             }
-
-            // Get the button that was clicked
-            Button cellButton = (Button)sender;
-
-            // Extract the row and column information from the button's Tag property
-            Tuple<int, int> cellPosition = (Tuple<int, int>)cellButton.Tag;
-            int row = cellPosition.Item1;
-            int col = cellPosition.Item2;
-
-            // Check if the cell is already filled
-            if (game.IsCellOccupied(row, col))
+            else
             {
-                MessageBox.Show("This cell is already occupied. Please choose an empty cell.");
-                return;
+                // Get the button that was clicked
+                Button cellButton = (Button)sender;
+
+                // Extract the row and column information from the button's Tag property
+                Tuple<int, int> cellPosition = (Tuple<int, int>)cellButton.Tag;
+                int row = cellPosition.Item1;
+                int col = cellPosition.Item2;
+
+                // Check if the cell is already filled
+                if (game.IsCellOccupied(row, col))
+                {
+                    MessageBox.Show("This cell is already occupied. Please choose an empty cell.");
+                    return;
+                }
+                char currentPlayerSymbol = game.GetCurrentPlayer();
+
+                game.MakeMove(row, col);
+                cellButton.Content = currentPlayerSymbol.ToString();
+
+                currentPlayerTurnName = (currentPlayerTurnName == player1Name) ? player2Name : player1Name;
+                txtCurrentPlayerTurn.Text = "Current Turn: " + currentPlayerTurnName;
+                // Update the current player
+                //game.SwitchPlayer();
             }
-            char currentPlayerSymbol = game.GetCurrentPlayer();
 
-            game.MakeMove(row, col);
-            cellButton.Content = currentPlayerSymbol.ToString();
 
-            currentPlayerTurnName = (currentPlayerTurnName == player1Name) ? player2Name : player1Name;
-            txtCurrentPlayerTurn.Text = "Current Turn: " + currentPlayerTurnName;
-            // Update the current player
-            game.SwitchPlayer();
         }
     }
 }

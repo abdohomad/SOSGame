@@ -8,8 +8,7 @@ namespace SOSGameLogic.Interfaces
 {
     public interface IGenericGameModeLogic
     {
-        void CheckForSOS(int row, int col);
+        int CheckForSOS(char[,] board, List<Tuple<int, int>> player1Moves, List<Tuple<int, int>> player2Moves, int row, int col, char current);
         bool HasWinner();
-        int GetCurrentPlayerScore();
     }
 }

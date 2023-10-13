@@ -53,6 +53,8 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"/>
         </Grid>
+        <Label Name="lblWinner" Content="" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Foreground="Red" />
+
 
         <Grid Name="GameGrid" Margin="10,80,10,10">
 

@@ -9,7 +9,9 @@ namespace SOSGameLogic.Implementation
 {
     public class GeneralGameMode : IGenericGameModeLogic
     {
-        public void CheckForSOS(int row, int col)
+        public GeneralGameMode() {
+        }
+        public int CheckForSOS(char[,] board, List<Tuple<int, int>> player1Moves, List<Tuple<int, int>> player2Moves, int row, int col, char currentPlayerSymbol)
         {
             throw new NotImplementedException();
         }
@@ -23,5 +25,7 @@ namespace SOSGameLogic.Implementation
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
