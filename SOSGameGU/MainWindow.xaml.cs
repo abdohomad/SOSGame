@@ -29,7 +29,7 @@ namespace SOSGameGU
             player1 = new Player(playerSymbol); // Initialize Player 1
             player2 = new Player(playerSymbol); // Initialize Player 2
 
-            _modeLogic = new SimpleGameMode(boardSize);
+            _modeLogic = new SimpleGameMode();
             game = new Game(boardSize, player1, player1, _modeLogic); // Initialize the game
         }
 
@@ -38,13 +38,15 @@ namespace SOSGameGU
         {
             if (sender is RadioButton radioButton)
             {
+                const string SimpleModeRadioButtonName = "rbSimpleMode";
+                const string GeneralModeRadioButtonName = "rbGeneralMode";
                 // Check which radio button was checked and update the selected game mode
-                if (radioButton.Name == "rbSimpleMode")
+                if (radioButton.Name == SimpleModeRadioButtonName)
                 {
-                    _modeLogic = new SimpleGameMode(boardSize);
+                    _modeLogic = new SimpleGameMode();
                   
                 }
-                else if (radioButton.Name == "rbGeneralMode")
+                else if (radioButton.Name == GeneralModeRadioButtonName)
                 {
                     _modeLogic = new GeneralGameMode();
                 }
@@ -64,23 +66,23 @@ namespace SOSGameGU
                 string[] parts = selectedItem.Content.ToString().Split('x');
                 int rows = int.Parse(parts[0]);
                 int cols = int.Parse(parts[1]);
-                Console.WriteLine("Selected board size: " + rows + "x" + cols);
+                //Console.WriteLine("Selected board size: " + rows + "x" + cols);
 
                 // Clear any existing rows and columns from the grid
                 GameBoardGrid.RowDefinitions.Clear();
                 GameBoardGrid.ColumnDefinitions.Clear();
-                Console.WriteLine("Cleared existing rows and columns from the grid.");
+                //Console.WriteLine("Cleared existing rows and columns from the grid.");
 
                 player1Name = lblPlayer1.Content.ToString();
                 player2Name = lblPlayer2.Content.ToString();
                 currentPlayerTurnName = player1Name;
                 txtCurrentPlayerTurn.Text = "Current Turn: " + currentPlayerTurnName;
-                Console.WriteLine("Initialized player names and current player's turn.");
+                //Console.WriteLine("Initialized player names and current player's turn.");
                 // Add new rows and columns based on the selected board size
                 for (int i = 0; i < rows; i++)
                 {
                     GameBoardGrid.RowDefinitions.Add(new RowDefinition());
-                    Console.WriteLine("Added new rows and columns to the grid.");
+                    //Console.WriteLine("Added new rows and columns to the grid.");
                 }
 
                 for (int j = 0; j < cols; j++)
@@ -88,7 +90,7 @@ namespace SOSGameGU
                     GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 }
 
-                        StartGame(rows);
+                StartGame(rows);
 
             }
             else
@@ -183,11 +185,8 @@ namespace SOSGameGU
                     GameBoardGrid.Children.Add(cellButton);
                 }
             }
-
-            //IPlayer currentPlayer = (_modeLogic is SimpleGameMode) ? player1 : player2;
             game = new Game(boardSize, player1, player2, _modeLogic);
 
-            Console.WriteLine(game.ToString());
         }
 
         // Event handler for cell button clicks
@@ -199,33 +198,14 @@ namespace SOSGameGU
                 //Console.WriteLine();
                 return;
             }
-            else if (game.IsGameOver())
-            {
-                //MessageBox.Show("The game is already over. Please start a new game.");
-                if (player1.GetScore() >= 3)
-                {
-                    lblWinner.Content = "Player 1 (S) Wins!";
-                }
-                else if (player2.GetScore() >= 3)
-                {
-                    lblWinner.Content = "Player 2 (O) Wins!";
-                }
-                else
-                {
-                    lblWinner.Content = "It's a draw!";
-                }
-                return;
-            }
-            else
+            else if (!game.IsGameOver())
             {
                 // Get the button that was clicked
                 Button cellButton = (Button)sender;
-
                 // Extract the row and column information from the button's Tag property
                 Tuple<int, int> cellPosition = (Tuple<int, int>)cellButton.Tag;
                 int row = cellPosition.Item1;
                 int col = cellPosition.Item2;
-
                 // Check if the cell is already filled
                 if (game.IsCellOccupied(row, col))
                 {
@@ -236,11 +216,26 @@ namespace SOSGameGU
 
                 game.MakeMove(row, col);
                 cellButton.Content = currentPlayerSymbol.ToString();
-
                 currentPlayerTurnName = (currentPlayerTurnName == player1Name) ? player2Name : player1Name;
                 txtCurrentPlayerTurn.Text = "Current Turn: " + currentPlayerTurnName;
-                // Update the current player
-                //game.SwitchPlayer();
+            }
+            else
+            {
+               
+                if (player1.GetScore() >= 3)
+                {
+                    lblWinner.Content = $"{player1Name} Wins!";
+                }
+                else if (player2.GetScore() >= 3)
+                {
+                    lblWinner.Content = $"{player2Name} Wins!";
+                }
+                else
+                {
+                    lblWinner.Content = "It's a draw!";
+                }
+                MessageBox.Show("The game is already over. Please start a new game.");
+                return;
             }
 
 

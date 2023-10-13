@@ -1,31 +1,36 @@
 ﻿using SOSGameLogic.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SOSGameLogic.Implementation
 {
-    public class GeneralGameMode : IGenericGameModeLogic
+    public class GeneralGameMode : GenericGameModeLogic
     {
-        public GeneralGameMode() {
-        }
-        public int CheckForSOS(char[,] board, List<Tuple<int, int>> player1Moves, List<Tuple<int, int>> player2Moves, int row, int col, char currentPlayerSymbol)
+        public GeneralGameMode() { }
+
+        public override bool DetermineWinner(IPlayer player1, IPlayer player2)
         {
-            throw new NotImplementedException();
+
+            int player1Score = player1.GetScore();
+            int player2Score = player2.GetScore();
+            
+            if (player1Score > player2Score)
+            {
+                // Player 1 wins
+                return true;
+            }
+            else if (player2Score > player1Score)
+            {
+                // Player 2 wins
+                return true;
+            }
+            else
+            {
+                // It's a draw
+                return false;
+            }
         }
 
-        public int GetCurrentPlayerScore()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasWinner()
-        {
-            throw new NotImplementedException();
-        }
-
-       
     }
+
 }

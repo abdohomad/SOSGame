@@ -44,6 +44,7 @@
     <Compile Include="Implementation\Board.cs" />
     <Compile Include="Implementation\Game.cs" />
     <Compile Include="Implementation\GeneralGameMode.cs" />
+    <Compile Include="Implementation\GenericGameModeLogic.cs" />
     <Compile Include="Implementation\Player.cs" />
     <Compile Include="Implementation\SimpleGameMode.cs" />
     <Compile Include="Interfaces\IBoard.cs" />

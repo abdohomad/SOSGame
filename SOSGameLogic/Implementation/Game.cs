@@ -25,8 +25,6 @@ namespace SOSGameLogic.Implementation
         }
 
      
-
-
         // Returns the symbol of the current player ('S' or 'O')
         public char GetCurrentPlayer()
         {
@@ -41,42 +39,49 @@ namespace SOSGameLogic.Implementation
             return board.GetSymbolAt(row, col) != ' ';
         }
 
-        // Checks if the game is over (board is full)
-        public bool IsGameOver()
-        {
+        // Checks if the game is over
+        public bool IsGameOver(){  
 
-            if (_player1.GetScore() >= 3 || _player2.GetScore() >= 3)
+             if (_modeLogic is SimpleGameMode)
             {
                 // Game over when one player scores 3
-                return true;
+                return _modeLogic.DetermineWinner(_player1, _player2);
             }
-
+            else if (_modeLogic is GeneralGameMode)
+            {
+                // Game over when the board is full.
+                if (board.IsBoardFull())
+                {
+                    return _modeLogic.DetermineWinner(_player1, _player2);
+                }
+            }
+          
             return false;
         }
 
-        // Allows a player to make a move by placing their symbol on the board
+            // Allows a player to make a move by placing their symbol on the board
         public void MakeMove(int row, int col)
-        {
-            if (!IsGameOver())
-            {
-                if (board.IsValidMove(row, col))
+        { 
+                if (!IsGameOver())
                 {
-                    char currentPlayerSymbol = currentPlayer.GetPlayerSymbol();
-                    board.PlaceSymbol(row, col, currentPlayerSymbol);
-                    if (currentPlayer == _player1)
+                    if (board.IsValidMove(row, col))
                     {
-                        _player1Moves.Add(new Tuple<int, int>(row, col));
+                        char currentPlayerSymbol = currentPlayer.GetPlayerSymbol();
+                        board.PlaceSymbol(row, col, currentPlayerSymbol);
+                        if (currentPlayer == _player1)
+                        {
+                             _player1Moves.Add(new Tuple<int, int>(row, col));
+                        }
+                        else if (currentPlayer == _player2)
+                        {
+                            _player2Moves.Add(new Tuple<int, int>(row, col));
+                        }
+                        int score =  _modeLogic.CheckForSOS(board.GetBoard(), _player1Moves, _player2Moves, row, col, currentPlayerSymbol);
+                        currentPlayer.IncreaseScore(score);
+                        SwitchPlayer();
                     }
-                    else if (currentPlayer == _player2)
-                    {
-                        _player2Moves.Add(new Tuple<int, int>(row, col));
-                    }
-                    int score = _modeLogic.CheckForSOS(board.GetBoard(), _player1Moves, _player2Moves, row, col, currentPlayerSymbol);
-                    currentPlayer.IncreaseScore(score);
-                    SwitchPlayer();
+
                 }
-   
-            }
 
         }
 
@@ -85,5 +90,8 @@ namespace SOSGameLogic.Implementation
         {
             currentPlayer = (currentPlayer == _player1) ? _player2 : _player1;
         }
+
+        
+
     }
 }
