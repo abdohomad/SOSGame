@@ -17,12 +17,31 @@ namespace SOSGameLogic.Implementation
             {
                 return true;
             }
-            else
-            {
-                return false;
+            else 
+            { 
+                return false; 
             }
 
         }
+
+        public override IPlayer GetWinner(IPlayer _player1, IPlayer _player2)
+        {
+            IPlayer winnerPlayer = null;
+          
+           if(_player1.GetScore() >= 3)
+            {
+                winnerPlayer = _player1;
+            }
+           else if (_player2.GetScore() >= 3)
+            { winnerPlayer = _player2; }
+            else
+            {
+                return null;
+            }
+           return winnerPlayer;
+        }
+
+
 
     }
 }

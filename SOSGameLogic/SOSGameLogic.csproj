@@ -47,12 +47,16 @@
     <Compile Include="Implementation\GenericGameModeLogic.cs" />
     <Compile Include="Implementation\Player.cs" />
     <Compile Include="Implementation\SimpleGameMode.cs" />
+    <Compile Include="Implementation\SOSLine.cs" />
+    <Compile Include="Implementation\SOSLineType.cs" />
     <Compile Include="Interfaces\IBoard.cs" />
     <Compile Include="Interfaces\IGame.cs" />
     <Compile Include="Interfaces\IGenericGameModeLogic.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

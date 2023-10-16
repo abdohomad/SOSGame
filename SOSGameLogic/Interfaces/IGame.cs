@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace SOSGameLogic.Interfaces
 {
     public interface IGame
@@ -9,5 +11,6 @@ namespace SOSGameLogic.Interfaces
         bool IsGameOver();
         void MakeMove(int row, int col);
         void SwitchPlayer();
+        List<SOSLine> GetDetectedSOSLines();
     }
 }

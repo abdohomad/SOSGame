@@ -7,11 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        
+        
         <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
             <TextBlock Text="Select Game Mode:" />
             <RadioButton Name="rbSimpleMode" Content="Simple" Checked="RadioButton_Checked_Game_Mode" IsChecked="True" />
             <RadioButton Name="rbGeneralMode" Content="General" Checked="RadioButton_Checked_Game_Mode" />
         </StackPanel>
+        
 
         <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
             <TextBlock Text="Select Board Size:" />
@@ -57,17 +60,27 @@
 
 
         <Grid Name="GameGrid" Margin="10,80,10,10">
-            <Label Name="lblWinner" Content="" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Foreground="Red" />
 
             <Grid  Name="GameBoardGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="300" />
+
                 </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
                 </Grid.ColumnDefinitions>
+
             </Grid>
+
+
+
+            <Canvas Name="GameCanvas" Grid.Column="1" >
+                <!-- You can draw SOS lines here -->
+            </Canvas>
         </Grid>
+        
+
         <Button x:Name="btnStartGame" Content="Start Game" Click="StartGame_Click" FontFamily="Arial Black" FontSize="16"
             VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10"/>
         <TextBlock Name="txtCurrentPlayerTurn" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" />

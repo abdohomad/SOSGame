@@ -10,9 +10,10 @@ namespace SOSGameLogic.Implementation
         private IPlayer currentPlayer; // Represents the current player
         private readonly IPlayer _player1; // Player 1
         private readonly IPlayer _player2; // Player 2
-        private readonly List<Tuple<int, int>> _player1Moves;
-        private readonly List<Tuple<int, int>> _player2Moves;
+        public readonly List<Tuple<int, int>> _player1Moves;
+        public readonly List<Tuple<int, int>> _player2Moves;
         private IGenericGameModeLogic _modeLogic;
+        private List<SOSLine> detectedSOSLines;
         public Game(int size, IPlayer player1, IPlayer player2, IGenericGameModeLogic modeLogic)
         {
             board = new Board(size); // Initialize the game board with the specified size
@@ -21,6 +22,7 @@ namespace SOSGameLogic.Implementation
             currentPlayer = player1; // Set the current player to Player 1 at the start of the game
             _player1Moves = new List<Tuple<int, int>>();
             _player2Moves = new List<Tuple<int, int>>();
+            detectedSOSLines = new List<SOSLine>();
             _modeLogic = modeLogic;
         }
 
@@ -29,7 +31,6 @@ namespace SOSGameLogic.Implementation
         public char GetCurrentPlayer()
         {
             char currentPlayersSymbol = currentPlayer.GetPlayerSymbol();
-            Console.WriteLine($"Current player is {currentPlayersSymbol}");
             return currentPlayersSymbol;
         }
 
@@ -39,49 +40,47 @@ namespace SOSGameLogic.Implementation
             return board.GetSymbolAt(row, col) != ' ';
         }
 
-        // Checks if the game is over
-        public bool IsGameOver(){  
 
-             if (_modeLogic is SimpleGameMode)
-            {
-                // Game over when one player scores 3
-                return _modeLogic.DetermineWinner(_player1, _player2);
-            }
-            else if (_modeLogic is GeneralGameMode)
-            {
-                // Game over when the board is full.
-                if (board.IsBoardFull())
-                {
-                    return _modeLogic.DetermineWinner(_player1, _player2);
-                }
-            }
-          
-            return false;
-        }
-
-            // Allows a player to make a move by placing their symbol on the board
         public void MakeMove(int row, int col)
         { 
-                if (!IsGameOver())
-                {
+               if (!IsGameOver())
+               {
                     if (board.IsValidMove(row, col))
                     {
+                        
                         char currentPlayerSymbol = currentPlayer.GetPlayerSymbol();
                         board.PlaceSymbol(row, col, currentPlayerSymbol);
                         if (currentPlayer == _player1)
                         {
                              _player1Moves.Add(new Tuple<int, int>(row, col));
+                             _modeLogic.CheckForSOS(board.GetBoard(), _player1Moves,
+                                       row, col, currentPlayerSymbol, currentPlayer);
+                        SOSLine sosLine = _modeLogic.DetectSOSLine(board.GetBoard(), _player1Moves, row, col, currentPlayerSymbol, currentPlayer);
+                        if (sosLine != null)
+                        {
+                            detectedSOSLines.Add(sosLine);
                         }
-                        else if (currentPlayer == _player2)
+                    }
+                    else if (currentPlayer == _player2)
                         {
                             _player2Moves.Add(new Tuple<int, int>(row, col));
+                            _modeLogic.CheckForSOS(board.GetBoard(), _player2Moves,
+                                row, col, currentPlayerSymbol, currentPlayer);
+                        SOSLine sosLine = _modeLogic.DetectSOSLine(board.GetBoard(), _player2Moves, row, col, currentPlayerSymbol, currentPlayer);
+                        if (sosLine != null)
+                        {
+                            detectedSOSLines.Add(sosLine);
                         }
-                        int score =  _modeLogic.CheckForSOS(board.GetBoard(), _player1Moves, _player2Moves, row, col, currentPlayerSymbol);
-                        currentPlayer.IncreaseScore(score);
-                        SwitchPlayer();
+
                     }
 
-                }
+                    
+
+
+                    SwitchPlayer();
+                    }
+
+               }
 
         }
 
@@ -91,7 +90,32 @@ namespace SOSGameLogic.Implementation
             currentPlayer = (currentPlayer == _player1) ? _player2 : _player1;
         }
 
+        public List<SOSLine> GetDetectedSOSLines()
+        {
+            return detectedSOSLines;
+        }
+
+        // Detect and store SOS lines within your game logic without adding them to the game's score.
         
+
+
+        // Checks if the game is over
+        public bool IsGameOver()
+        {
+            if(_modeLogic is SimpleGameMode)
+            {
+                return _modeLogic.DetermineWinner(_player1, _player2);
+            }
+            else if( _modeLogic is GeneralGameMode)
+            {
+                if (board.IsBoardFull())
+                {
+                    return _modeLogic.DetermineWinner(_player1, _player2);
+                }
+            }
+            return false;
+        }
+
 
     }
 }

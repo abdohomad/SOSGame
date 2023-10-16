@@ -8,8 +8,10 @@ namespace SOSGameLogic.Interfaces
 {
     public interface IGenericGameModeLogic
     {
-        int CheckForSOS(char[,] board, List<Tuple<int, int>> player1Moves, List<Tuple<int, int>> player2Moves, int row, int col, char currentPlayerSymbol);
+        void CheckForSOS(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol, IPlayer currentPlayer);
+        SOSLine DetectSOSLine(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol, IPlayer currentPLayer);
         bool DetermineWinner(IPlayer _player1, IPlayer _player2);
+        IPlayer GetWinner(IPlayer _player1, IPlayer _layer2);
 
 
     }
