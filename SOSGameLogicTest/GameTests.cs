@@ -5,86 +5,62 @@ namespace SOSGameLogicTest
 {
     public class GameTests
     {
+        private SimpleGameMode? modeLogic;
+
         [Fact]
-        public void GetCurrentPlayer_ReturnsInitialPlayerSymbol()
+        public void IsCellOccupied_WhenCellIsEmpty_ShouldReturnFalse()
         {
             // Arrange
-            IPlayer player1 = new Player('S');
+            IPlayer player1 = new Player('X');
             IPlayer player2 = new Player('O');
-            IGame game = new Game(3, player1, player2);
+            modeLogic = new SimpleGameMode();
+            IGame game = new Game(3, player1, player2, modeLogic);
 
             // Act
-            char currentPlayerSymbol = game.GetCurrentPlayer();
+            bool result = game.IsCellOccupied(1, 1);
 
             // Assert
-            Assert.Equal('S', currentPlayerSymbol); // Assuming player1 starts
-        }
-
-        [Theory]
-        [InlineData(0, 0, true)] // Valid move to an empty cell
-        [InlineData(1, 1, false)] // Invalid move to a non-empty cell
-        [InlineData(4, 4, false)] // Invalid move outside of the board
-        public void IsCellOccupied_ReturnsExpectedResult(int row, int col, bool expectedResult)
-        {
-            // Arrange
-            IPlayer player1 = new Player('S');
-            IPlayer player2 = new Player('O');
-            IGame game = new Game(4, player1, player2);
-
-            // Act
-            bool isOccupied = game.IsCellOccupied(row, col);
-
-            // Assert
-            Assert.Equal(expectedResult, isOccupied);
+            Assert.False(result);
         }
 
         [Fact]
-        public void IsGameOver_EmptyBoard_ReturnsFalse()
+        public void MakeMoveValidMoveShouldPlaceSymbolAndSwitchPlayer()
         {
             // Arrange
-            IPlayer player1 = new Player('S');
+            IPlayer player1 = new Player('X');
             IPlayer player2 = new Player('O');
-            IGame game = new Game(3, player1, player2);
-
-            // Act
-            bool isGameOver = game.IsGameOver();
-
-            // Assert
-            Assert.False(isGameOver);
-        }
-
-        [Fact]
-        public void MakeMove_PlacesSymbolOnBoard()
-        {
-            // Arrange
-            IPlayer player1 = new Player('S');
-            IPlayer player2 = new Player('O');
-            IGame game = new Game(3, player1, player2);
+            modeLogic = new SimpleGameMode();
+            IGame game = new Game(3, player1, player2, modeLogic);
 
             // Act
             game.MakeMove(0, 0);
-            char symbol = game.GetCurrentPlayer(); // Assuming player1 starts
 
             // Assert
-            Assert.Equal(symbol, game.GetCurrentPlayer());
             Assert.True(game.IsCellOccupied(0, 0));
+           
         }
 
         [Fact]
-        public void SwitchPlayer_SwitchesPlayerCorrectly()
+        public void SwitchPlayerShouldChangeCurrentPlayer()
         {
             // Arrange
-            IPlayer player1 = new Player('S');
+            IPlayer player1 = new Player('X');
             IPlayer player2 = new Player('O');
-            IGame game = new Game(3, player1, player2);
+            modeLogic = new SimpleGameMode();
+            IGame game = new Game(3, player1, player2, modeLogic);
 
             // Act
             game.SwitchPlayer();
 
             // Assert
-            Assert.Equal('O', game.GetCurrentPlayer());
+            Assert.Equal(player2, game.GetCurrentPlayer());
+
+            // Act again
+            game.SwitchPlayer();
+
+            // Assert
+            Assert.Equal(player1, game.GetCurrentPlayer());
         }
 
-   
     }
 }

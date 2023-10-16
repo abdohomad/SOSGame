@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "FYTdj3NIgOLLkVuITsKBuem77D1/1dyEd9NY//+lEDNsD2wXnzFQFbIsRztp6Ar1leypxB4vjd1dz9/xqH1vlQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\MonaH\\OneDrive\\Desktop\\UMKC-FALL-2023\\COMP-SCI 431\\SOSGame\\SOSGameGUTest\\SOSGameGUTest.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MonaH\\.nuget\\packages\\microsoft.codecoverage\\16.5.0\\microsoft.codecoverage.16.5.0.nupkg.sha512",
+    "C:\\Users\\MonaH\\.nuget\\packages\\microsoft.net.test.sdk\\16.5.0\\microsoft.net.test.sdk.16.5.0.nupkg.sha512",
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\nunit\\3.12.0\\nunit.3.12.0.nupkg.sha512",
+    "C:\\Users\\MonaH\\.nuget\\packages\\nunit3testadapter\\3.16.1\\nunit3testadapter.3.16.1.nupkg.sha512"
+  ],
+  "logs": []
+}

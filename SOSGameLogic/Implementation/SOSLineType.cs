@@ -1,13 +1,11 @@
 ﻿public enum SOSLineType
 {
-    Horizontal,
-    Vertical,
-    DiagonalTopLeftToBottomRight,
-    DiagonalTopRightToBottomLeft,
-
-  
-    HorizontalWithMiddle,
-    VerticalWithMiddle,
+    HorizontalToTheRight,
+    HorizontalToTheLeft,
+    VerticalUpWard,
+    VerticalDownWard,
     DiagonalTopLeftToBottomRightWithMiddle,
-    DiagonalTopRightToBottomLeftWithMiddle
+    DiagonalTopRightToBottomLeftWithMiddle,
+    DiagonalBottomRightToTopLeft,
+    DiagonalBottomLeftToTopRight
 }

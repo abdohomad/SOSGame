@@ -1,7 +1,11 @@
 ﻿using SOSGameLogic.Interfaces;
 
+/// <summary>
+/// Represents an SOS (Scissors, Paper, Stone) line on the game board.
+/// </summary>
 public class SOSLine
 {
+
     public int StartRow { get; }
     public int StartCol { get; }
     public int EndRow { get; }
@@ -11,6 +15,8 @@ public class SOSLine
     public char PlayerSymbol { get; }
     public SOSLineType Type { get; }
     public IPlayer Player { get; }
+    public double X1Middle { get; set; }
+    public double Y1Middle { get; set; }
 
     public SOSLine(int startRow, int startCol, int endRow, int endCol, int middleRow, int middleCol, SOSLineType type, IPlayer player)
     {
@@ -22,8 +28,6 @@ public class SOSLine
         MiddleCol = middleCol;
         Type = type;
         Player = player;
-
-       PlayerSymbol = player.GetPlayerSymbol();
-
+        PlayerSymbol = player.GetPlayerSymbol();
     }
 }

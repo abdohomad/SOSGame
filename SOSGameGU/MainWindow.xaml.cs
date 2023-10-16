@@ -292,6 +292,7 @@ namespace SOSGameGU
             }
             else
             {
+
                 // Default to another color (you can change this as needed)
                 line.Stroke = Brushes.Black;
             }
@@ -353,6 +354,8 @@ namespace SOSGameGU
                 line.Y1 = startY;
                 line.X2 = endX;
                 line.Y2 = endY;
+          
+             
             }
 
 

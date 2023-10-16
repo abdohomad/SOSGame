@@ -1,224 +1,227 @@
 ﻿using SOSGameLogic.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Security.Principal;
 
 namespace SOSGameLogic.Implementation
 {
     public abstract class GenericGameModeLogic : IGenericGameModeLogic
     {
-         // Represents the current player
 
-       
 
-        // Calculate the score based on SOS patterns
-        public void CheckForSOS(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol, IPlayer currentPlayer)
+
+        internal bool CheckHorizontalToTheLeft(char[,] board,  int row, int col)
         {
-        
-           
-            if (CheckHorizontal(board, playerMoves, row, col, currentPlayerSymbol) ||
-                  CheckDiagonal(board, playerMoves, row, col, currentPlayerSymbol) ||
-                  CheckVertical(board, playerMoves, row, col, currentPlayerSymbol))
-            {
-                currentPlayer.IncreaseScore(3);
+            int miniCellToTheLeft = 2;
+            int boardWidth = board.GetLength(1);
 
-            }
-      
+            if ( (col >= miniCellToTheLeft && col <=boardWidth-1) && (board[row, col] == 'S')&&
+               (board[row, col-1] == 'O') && (board[row, col-2] == 'S') ||
+               (col>=1 && col <=boardWidth-2 && board[row, col] == 'O' && board[row, col - 1] == 'S' && board[row, col + 1] == 'S'))
+             {
+                     return true;             
+             }
+
+            return false;
         }
-
-
-        public SOSLine DetectSOSLine(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol, IPlayer currentPLayer)
+        internal bool CheckHorizontalToTheRight(char[,] board,  int row, int col)
         {
-            // Check for SOS pattern horizontally, diagonally, and vertically
-            if (CheckHorizontal(board, playerMoves, row, col, currentPlayerSymbol))
-            {
-                int startCol = col - 2;
-                int middleCol = col - 1;
-                int endCol = col;
-                int middleRow = 0;
-                int startRow = row;
-                int endRow = row;
+            int boardWidth = board.GetLength(1);
+            int miniCellToTheRight = boardWidth - 2;
 
-                // Create and return an SOSLine for a horizontal pattern with the middle cell
-                return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.HorizontalWithMiddle, currentPLayer);
-            }
-            else if (CheckDiagonal(board, playerMoves, row, col, currentPlayerSymbol))
-            {
-                int startRow = row - 2;
-                int startCol = col - 2;
-                int middleRow = row - 1;
-                int middleCol = col - 1;
-                int endRow = row;
-                int endCol = col;
-
-                // Create and return an SOSLine for a diagonal pattern with the middle cell
-                return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.DiagonalTopLeftToBottomRightWithMiddle, currentPLayer);
-            }
-            else if (CheckVertical(board, playerMoves, row, col, currentPlayerSymbol))
-            {
-                int startRow = row - 2;
-                int middleRow = row - 1;
-                int endRow = row;
-                int startCol = col;
-                int middleCol = col;
-                int endCol = col;
-
-                // Create and return an SOSLine for a vertical pattern with the middle cell
-                return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.VerticalWithMiddle, currentPLayer);
-            }
-
-            return null; // No SOS line detected
-        }
-
-
-
-        private bool CheckHorizontal(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol)
-        {
-            int boardWidth = board.GetLength(1); // Width of the board
-
-            int symbolsInARow = 0;
-
-            // Check to the left
-            for (int i = col - 1; i >= 0; i--)
-            {
-                if (board[row, i] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(row, i)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Check to the right
-            for (int i = col + 1; i < boardWidth; i++)
-            {
-                if (board[row, i] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(row, i)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return symbolsInARow >= 2 && (symbolsInARow % 3 == 2); // Check for "SOS" pattern
-        }
-
-
-        // Check for SOS pattern diagonally
-
-        // Check for SOS pattern diagonally
-        private bool CheckDiagonal(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol)
-        {
-            int boardWidth = board.GetLength(1); // Width of the board
-            int boardHeight = board.GetLength(0); // Height of the board
-
-            int symbolsInARow = 0;
-
-            // Check diagonal from top-left to bottom-right
-            int i, j;
-            for (i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
-            {
-                if (board[i, j] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, j)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (i = row + 1, j = col + 1; i < boardHeight && j < boardWidth; i++, j++)
-            {
-                if (board[i, j] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, j)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (symbolsInARow >= 2 && (symbolsInARow % 3 == 2))
+            if ((col < miniCellToTheRight) && (board[row, col] == 'S') &&
+                (board[row, col + 1] == 'O') && (board[row, col + 2] == 'S'))
             {
                 return true;
             }
-
-            // Check diagonal from top-right to bottom-left
-            symbolsInARow = 0;
-            for (i = row - 1, j = col + 1; i >= 0 && j < boardWidth; i--, j++)
-            {
-                if (board[i, j] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, j)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (i = row + 1, j = col - 1; i < boardHeight && j >= 0; i++, j--)
-            {
-                if (board[i, j] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, j)))
-                {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return symbolsInARow >= 2 && (symbolsInARow % 3 == 2); // Check for "SOS" pattern
+ 
+            return false; 
         }
-
-        // Check for SOS pattern vertically
-        private bool CheckVertical(char[,] board, List<Tuple<int, int>> playerMoves, int row, int col, char currentPlayerSymbol)
+        internal bool CheckVerticalDownWard(char[,] board, int row, int col)
         {
-            int boardHeight = board.GetLength(0); // Height of the board
 
-            int symbolsInARow = 0;
-
-            // Check upward
-            for (int i = row - 1; i >= 0; i--)
+            int boardHeight = board.GetLength(0);
+            int miniCellToTheTop = boardHeight-2;
+            if ((row < miniCellToTheTop) && (board[row, col] == 'S') &&
+               (board[row + 1, col] == 'O') && (board[row + 2, col] == 'S') ||
+               ((row > 2) && board[row,col]=='O' && board[row-1, col]=='S'&& board[row+1,col]== 'S'))
             {
-                if (board[i, col] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, col)))
+                return true;
+
+            }
+            return false;
+
+        }
+        internal bool CheckVerticalUpward(char[,] board, int row, int col)
+        {
+           
+
+            if ((row >= 2) && (board[row, col] == 'S') &&
+                (board[row - 1, col] == 'O') && (board[row - 2, col] == 'S'))
+            {
+                return true;
+
+            }
+
+            return false;
+
+        }
+        internal bool CheckDiagonalTopLeftToBottomRight(char[,] board, int row, int col )
+        {
+            int count = 0;
+            int boardHeight = board.GetLength(0);
+            int boardWidth = board.GetLength(1);
+            if (row >= 0 && col >= 0 &&
+                row + 2 < boardHeight && col + 2 < boardWidth)
+            {
+                if (board[row, col] == 'S' &&
+                    board[row + 1, col + 1] == 'O' &&
+                    board[row + 2, col + 2] == 'S')
                 {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
+                    count = 3;
                 }
             }
 
-            // Check downward
-            for (int i = row + 1; i < boardHeight; i++)
+            return count >= 3;
+        }
+        internal bool CheckDiagonalTopRightToBottomLeft(char[,] board, int row, int col)
+        {
+            int boardHeight = board.GetLength(0);
+            int boardWidth = board.GetLength(1);
+            if (row >= 0 && col >= 2 && col <= boardWidth - 1 && row + 2 <= boardHeight)
             {
-                if (board[i, col] == currentPlayerSymbol || playerMoves.Contains(Tuple.Create(i, col)))
+                if (board[row, col] == 'S' && board[row + 1, col - 1] == 'O' && board[row + 2, col - 2] == 'S')
                 {
-                    symbolsInARow++;
-                }
-                else
-                {
-                    break;
+                    return true;
                 }
             }
 
-            return symbolsInARow >= 2 && (symbolsInARow % 3 == 2); // Check for "SOS" pattern
+            return false;
+        }
+        internal bool CheckDiagonalBottomRightToTopLeft(char[,] board, int row, int col)
+        {
+            int boardHeight = board.GetLength(0);
+            int boardWidth = board.GetLength(1);
+            if (row >= 2 && col >= 2 && col <= boardWidth - 1 && row + 2 <= boardHeight)
+            {
+                if (board[row, col] == 'S' && board[row - 1, col - 1] == 'O' && board[row - 2, col - 2] == 'S')
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        internal bool CheckDiagonalBottomLeftToRight(char[,] board, int row, int col)
+        {
+            int boardHeight = board.GetLength(0);
+            int boardWidth = board.GetLength(1);
+            if (row >= 2 && col >= 2 && col <= boardWidth - 3 && row + 2 <= boardHeight)
+            {
+                if (board[row, col] == 'S' && board[row - 1, col + 1] == 'O' && board[row - 2, col + 2] == 'S')
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public SOSLine DetectSOSLine(char[,] board,  int row, int col,  IPlayer currentPlayer)
+        {
+
+            if (CheckHorizontalToTheLeft(board,  row, col))
+            {
+                int startCol = col;
+                int endCol = col - 2;
+                int middleCol = col-1;
+                int middleRow = row;
+                if (board[row, col] == 'O' && board[row, col - 1] == 'S' && board[row, col + 1] == 'S')
+                {
+                    startCol = col + 1;
+                    endCol = col -1;
+                }
+                return new SOSLine(row, startCol, row, endCol, middleRow, middleCol, SOSLineType.HorizontalToTheLeft, currentPlayer);
+            }
+            if (CheckHorizontalToTheRight(board, row, col))
+            {
+                int startCol = col;
+                int endCol = col +2;
+                int middleCol = col - 1;
+                int middleRow = row;
+                return new SOSLine(row, startCol, row, endCol, middleRow, middleCol, SOSLineType.HorizontalToTheRight, currentPlayer);
+            }
+            else if (CheckVerticalDownWard(board, row, col))
+            {
+
+                int startRow = row;
+                int endRow = row + 2;
+                int middleCol = col;
+                int middleRow = row - 1;
+                if (board[row, col] == 'O' && board[row -1, col ] == 'S' && board[row+1, col] == 'S')
+                {
+                    startRow = row + 1;
+                    endRow = row - 1;
+                    middleRow = row;
+                }
+                return new SOSLine(startRow, col, endRow, col, middleRow, middleCol, SOSLineType.VerticalDownWard, currentPlayer);
+            }
+            else if (CheckVerticalUpward(board, row, col))
+            {
+                int startRow = row;
+                int endRow = row - 2;
+                int middleCol = col;
+                int middleRow = row - 1;
+                return new SOSLine(startRow, col, endRow, col, middleRow, middleCol, SOSLineType.VerticalUpWard, currentPlayer);
+            }
+            else if (CheckDiagonalTopLeftToBottomRight(board,  row, col))
+              {
+                  int startRow = row;
+                  int startCol = col;
+                  int endRow = row + 2;
+                  int endCol = col + 2;
+                  int middleCol = col+1;
+                  int middleRow = row+1;
+                  return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.DiagonalTopLeftToBottomRightWithMiddle, currentPlayer);
+              }
+            else if (CheckDiagonalTopRightToBottomLeft(board,  row, col))
+            {
+                  int startRow = row;
+                  int startCol = col;
+                  int endRow = row + 2;
+                  int endCol = col - 2;
+                  int middleCol = col-1;
+                  int middleRow = row+1;
+                  return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.DiagonalTopRightToBottomLeftWithMiddle, currentPlayer);
+            }
+            else if (CheckDiagonalBottomRightToTopLeft(board,  row, col))
+            {
+                int startRow = row;
+                int startCol = col;
+                int endRow = row - 2;
+                int endCol = col - 2;
+                int middleCol = col -1;
+                int middleRow = row - 1;
+                return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.DiagonalBottomRightToTopLeft, currentPlayer);
+            }
+            else if(CheckDiagonalBottomLeftToRight(board, row, col))
+            {
+                int startRow = row;
+                int startCol = col;
+                int endRow = row - 2;
+                int endCol = col + 2;
+                int middleCol = col + 1;
+                int middleRow = row - 1;
+                return new SOSLine(startRow, startCol, endRow, endCol, middleRow, middleCol, SOSLineType.DiagonalBottomLeftToTopRight, currentPlayer);
+            }
+
+            return null;
         }
 
 
+        public abstract bool IsGameOver(IBoard board, IPlayer _player1, IPlayer _player2);
+        public abstract bool IsDraw(IBoard board, IPlayer _player1, IPlayer _player2);
+        public abstract bool PlayerHasWon(IPlayer _player1, IPlayer _player2);
 
-        // Determine the winner based on game-specific logic
-        public abstract bool DetermineWinner(IPlayer player1, IPlayer player2);
-
-        public abstract IPlayer GetWinner(IPlayer _player1, IPlayer _layer2);
-        
-            
-        
     }
 }

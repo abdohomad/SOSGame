@@ -9,39 +9,26 @@ namespace SOSGameLogic.Implementation
     {
 
         public SimpleGameMode() { }
-       
-        public override bool DetermineWinner(IPlayer _player1, IPlayer _player2)
-        {
-            int score = 3;
-            if (_player1.GetScore() >= score || _player2.GetScore() >= score)
-            {
-                return true;
-            }
-            else 
-            { 
-                return false; 
-            }
+        
 
+        public override bool IsGameOver(IBoard board, IPlayer _player1, IPlayer _player2)
+        {
+            return board.IsBoardFull() || PlayerHasWon(_player1,_player2);
         }
 
-        public override IPlayer GetWinner(IPlayer _player1, IPlayer _player2)
+        public override bool PlayerHasWon(IPlayer _player1, IPlayer _player2)
         {
-            IPlayer winnerPlayer = null;
-          
-           if(_player1.GetScore() >= 3)
-            {
-                winnerPlayer = _player1;
-            }
-           else if (_player2.GetScore() >= 3)
-            { winnerPlayer = _player2; }
-            else
-            {
-                return null;
-            }
-           return winnerPlayer;
+
+            int winningScore = 3;
+            return _player1.GetScore() >= winningScore || _player2.GetScore() >= winningScore;
         }
 
 
-
+        public override bool IsDraw(IBoard board, IPlayer _player1, IPlayer _player2)
+        {
+            // Check if the board is full and no player has won
+            return board.IsBoardFull() && !PlayerHasWon(_player1, _player2);
+        }
     }
+    
 }

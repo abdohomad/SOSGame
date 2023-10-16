@@ -37,11 +37,13 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Name="lblPlayer1" Content="Blue Player:" />
+                <TextBlock Name="txtPlayer1Score" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,10,0,0"/>
                 <RadioButton Name="rbPlayer1S" Content="S" Checked="RadioButton_Checked" />
                 <RadioButton Name="rbPlayer1O" Content="O" Checked="RadioButton_Checked" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Vertical">
                 <Label Name="lblPlayer2" Content="Red Player:" />
+                <TextBlock Name="txtPlayer2Score" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,10,0,0"/>
                 <RadioButton Name="rbPlayer2S" Content="S" Checked="RadioButton_Checked" />
                 <RadioButton Name="rbPlayer2O" Content="O" Checked="RadioButton_Checked" />
             </StackPanel>
@@ -56,31 +58,29 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"/>
         </Grid>
-       
+
 
 
         <Grid Name="GameGrid" Margin="10,80,10,10">
 
             <Grid  Name="GameBoardGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="300" />
+                    <RowDefinition Height="400" />
 
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="400" />
                 </Grid.ColumnDefinitions>
 
             </Grid>
 
-
-
-            <Canvas Name="GameCanvas" Grid.Column="1" >
+            <Canvas Name="GameCanvas" Grid.Column="1"  HorizontalAlignment="Center"
+                VerticalAlignment="Center" Width="500" Height="500">
                 <!-- You can draw SOS lines here -->
             </Canvas>
         </Grid>
         
-
         <Button x:Name="btnStartGame" Content="Start Game" Click="StartGame_Click" FontFamily="Arial Black" FontSize="16"
             VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10"/>
         <TextBlock Name="txtCurrentPlayerTurn" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" />

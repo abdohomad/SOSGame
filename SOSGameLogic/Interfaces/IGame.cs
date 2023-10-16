@@ -6,7 +6,8 @@ namespace SOSGameLogic.Interfaces
     public interface IGame
     {
 
-        char GetCurrentPlayer();
+        IPlayer GetCurrentPlayer();
+        char GetCurrentPlayerSymbol();
         bool IsCellOccupied(int row, int col);
         bool IsGameOver();
         void MakeMove(int row, int col);
